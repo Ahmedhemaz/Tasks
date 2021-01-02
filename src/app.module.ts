@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ScheduleSubdomainModule } from './schedule-subdomain/schedule-subdomain.module';
 
 @Module({
-  imports: [],
+  imports: [ScheduleSubdomainModule],
   controllers: [AppController],
   providers: [AppService],
 })
