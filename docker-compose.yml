@@ -1,5 +1,16 @@
 version: "3"
 services:
+  db:
+    image: mysql:5.7
+    expose:
+      - "3306"
+    ports:
+      - "3307:3306"
+    env_file:
+      - ./.env.development
+    volumes:
+      - db_data:/var/lib/mysql
+    container_name: tasks-db
   api:
     build:
       dockerfile: Dockerfile.dev
@@ -15,3 +26,5 @@ services:
     container_name: tasks-api
     entrypoint: ./development-entry.sh
     command: [/usr/app/development-entry.sh]
+volumes:
+  db_data: {}
