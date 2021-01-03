@@ -1,7 +1,7 @@
-import { IValueObject } from '../../../../shared-kernal/interfaces/IValueObject';
-import { EMPTY_NAME_ERROR } from '../../error-messages/errors';
+import { IValueObject } from '../../../shared-kernal/interfaces/IValueObject';
+import { EMPTY_NAME_ERROR } from '../error-messages/errors';
 import isEmpty from 'validator/lib/isEmpty';
-import { EmptyStringException } from '../../exceptions/emptyString.exception';
+import { EmptyStringException } from '../exceptions/emptyString.exception';
 export class Name implements IValueObject<Name> {
 
     private readonly name: string;
