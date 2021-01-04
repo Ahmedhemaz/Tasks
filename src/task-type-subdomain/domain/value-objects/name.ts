@@ -1,7 +1,8 @@
 import { IValueObject } from '../../../shared-kernal/interfaces/IValueObject';
 import { EMPTY_NAME_ERROR } from '../error-messages/errors';
-import isEmpty from 'validator/lib/isEmpty';
 import { EmptyStringException } from '../exceptions/emptyString.exception';
+
+import isEmpty from 'validator/lib/isEmpty';
 export class Name implements IValueObject<Name> {
 
     private readonly name: string;
@@ -11,8 +12,8 @@ export class Name implements IValueObject<Name> {
         this.name = name;
     }
 
-    equals(valueObject: Name): boolean {
-        throw new Error('Method not implemented.');
+    equals(typeName: Name): boolean {
+        return typeName.getname() === this.name;
     }
 
     public getname(): Readonly<string> {
