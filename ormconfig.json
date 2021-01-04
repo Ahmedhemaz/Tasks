@@ -6,7 +6,7 @@
     "password": "Os@12345",
     "database": "tasks",
     "entities": [
-        "./dist/**/*.entity{.ts,.js}"
+        "./dist/**/*.dataModel{.ts,.js}"
     ],
     "migrations": [
         "./dist/shared-kernal/DB/migrations/*.js"

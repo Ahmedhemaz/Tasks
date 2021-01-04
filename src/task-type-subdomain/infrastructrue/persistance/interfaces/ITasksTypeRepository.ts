@@ -1,4 +1,4 @@
-import { TasksTypeDataModel } from "../models/type-name.entity";
+import { TasksTypeDataModel } from "../models/type-name.dataModel";
 
 export interface ITasksTypeRepository {
 
