@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'tasks_type' })
-export class tasksTypeDataModel {
+export class TasksTypeDataModel {
 
     @PrimaryGeneratedColumn()
     id: number;
