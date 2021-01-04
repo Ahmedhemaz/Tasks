@@ -1,8 +1,10 @@
+import { getConnection } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+
 import { ITasksTypeRepository } from "../interfaces/ITasksTypeRepository";
 import { TasksTypeDataModel } from "../models/type-name.entity";
 
-import { getConnection } from 'typeorm';
-
+@Injectable()
 export class TasksTypeRepository implements ITasksTypeRepository {
 
     getTypeById(typeId: number): TasksTypeDataModel {
