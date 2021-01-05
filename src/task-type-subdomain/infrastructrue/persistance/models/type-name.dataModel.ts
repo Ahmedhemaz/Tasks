@@ -1,12 +1,20 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'tasks_type' })
 export class TasksTypeDataModel {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @Column({
+        primary: true,
+        type: 'uuid',
+        unique: true,
+        name: 'id'
+    })
+    id: string;
 
-    @Column()
+    @Column({
+        nullable: false,
+        name: 'name'
+    })
     name: string;
 
     @CreateDateColumn({ name: 'created_at' })
