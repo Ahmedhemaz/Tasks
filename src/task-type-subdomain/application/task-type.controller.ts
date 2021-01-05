@@ -1,8 +1,13 @@
-import { Controller, Get, HttpCode, Inject, Injectable, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post } from '@nestjs/common';
+import { Response } from 'express';
+
 import { TasksTypeDataModel } from '../infrastructrue/persistance/models/type-name.dataModel';
 import { ITasksTypeRepository, ITasksTypeReposiroty_DI_TOKEN } from '../infrastructrue/persistance/interfaces/ITasksTypeRepository';
 import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
+import { TaskTypeDTO } from './DTOs/task-type.dto';
+import { Res } from '@nestjs/common';
+
 @Controller('task-types')
 @Injectable()
 export class TaskTypeController {
@@ -18,10 +23,9 @@ export class TaskTypeController {
     }
 
     @Post()
-    @HttpCode(204)
-    create() {
-        const taskTypeAggregate = new TaskTypeAggregate('sports');
+    create(@Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
+        const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
         this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
-        return 'new Type created';
+        res.status(HttpStatus.CREATED).send({ message: 'Type Created Successfully .' });
     }
 }

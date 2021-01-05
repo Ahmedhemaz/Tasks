@@ -4,7 +4,7 @@ then
     echo "development mode running";
     npm run prebuild
     npx typeorm migration:run
-    npm run start:dev
+    npm run start
 else
     npm run start
 fi
