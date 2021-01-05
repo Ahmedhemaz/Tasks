@@ -23,9 +23,9 @@ export class TaskTypeController {
     }
 
     @Post()
-    create(@Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
+    async create(@Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
         const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
         this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
-        res.status(HttpStatus.CREATED).send({ message: 'Type Created Successfully .' });
+        res.status(HttpStatus.CREATED).send({ message: 'Type Created Successfully.' });
     }
 }
