@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class createTasksTypeTable1609661444370 implements MigrationInterface {
+export class createTasksTypeTable1609820816841 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         const createTasksTypeTableQuery: string = `CREATE TABLE IF NOT EXISTS tasks_type (

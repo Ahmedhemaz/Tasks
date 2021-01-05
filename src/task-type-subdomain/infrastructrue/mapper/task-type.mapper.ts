@@ -1,7 +1,10 @@
+import { Injectable } from "@nestjs/common";
+
 import { IAggregateDataModelMapper } from "../../../shared-kernal/interfaces/IAggregateDataModelMapper";
 import { TaskTypeAggregate } from "../../domain/aggregates/type.aggregate";
 import { TasksTypeDataModel } from "../persistance/models/type-name.dataModel";
 
+@Injectable()
 export class TasksTypeMapper implements IAggregateDataModelMapper<TaskTypeAggregate, TasksTypeDataModel> {
 
     public mapAggregateToDataModel(taskTypeAggregate: TaskTypeAggregate): TasksTypeDataModel {

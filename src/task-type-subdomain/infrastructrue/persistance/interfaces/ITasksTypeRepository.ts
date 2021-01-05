@@ -1,5 +1,6 @@
 import { TasksTypeDataModel } from "../models/type-name.dataModel";
 
+export const ITasksTypeReposiroty_DI_TOKEN = Symbol('ITasksTypeReposiroty');
 export interface ITasksTypeRepository {
 
     getTypeById(typeId: number): TasksTypeDataModel;
