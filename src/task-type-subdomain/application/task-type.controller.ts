@@ -1,16 +1,16 @@
 import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Res } from '@nestjs/common';
 import { Response } from 'express';
+import { diskStorage } from 'multer';
 
 import { TasksTypeDataModel } from '../infrastructrue/persistance/models/type-name.dataModel';
 import { ITasksTypeRepository, ITasksTypeReposiroty_DI_TOKEN } from '../infrastructrue/persistance/interfaces/ITasksTypeRepository';
+import { FileFilterService } from '../infrastructrue/file-upload/file-filter.service';
+import { FileNamingService } from '../infrastructrue/file-upload/file-naming.service';
 import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
 import { TaskTypeDTO } from './DTOs/task-type.dto';
-import { Res } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { FileFilterService } from '../infrastructrue/file-upload/file-filter.service';
-import { diskStorage } from 'multer';
-import { FileNamingService } from '../infrastructrue/file-upload/file-naming.service';
 
 @Controller('task-types')
 @Injectable()
