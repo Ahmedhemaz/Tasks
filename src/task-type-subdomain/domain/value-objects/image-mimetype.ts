@@ -1,9 +1,9 @@
 import isEmpty from "validator/lib/isEmpty";
 
 import { IValueObject } from "../../../shared-kernal/interfaces/IValueObject";
-import { EMPTY_IMAGE_MIME_TYPE_ERROR, INVALID_IMAGE_TYPE_ERROR } from "../error-messages/errors";
+import { EMPTY_IMAGE_MIME_TYPE_ERROR, INVALID_IMAGE_FORMAT_ERROR } from "../error-messages/errors";
 import { EmptyStringException } from "../exceptions/emptyString.exception";
-import { InvalidImageTypeException } from "../exceptions/invalid-image-type.exception";
+import { InvalidImageFormatException } from "../exceptions/invalid-image-format.exception";
 
 export class ImageMimeType implements IValueObject<ImageMimeType> {
 
@@ -14,7 +14,7 @@ export class ImageMimeType implements IValueObject<ImageMimeType> {
         if (isEmpty(mimeType, { ignore_whitespace: true }))
             throw new EmptyStringException(EMPTY_IMAGE_MIME_TYPE_ERROR);
         if (!this.isValidImageMimeType(mimeType.trim()))
-            throw new InvalidImageTypeException(INVALID_IMAGE_TYPE_ERROR);
+            throw new InvalidImageFormatException(INVALID_IMAGE_FORMAT_ERROR);
         this.mimeType = mimeType;
     }
 
