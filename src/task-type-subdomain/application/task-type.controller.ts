@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
 
 import { TasksTypeDataModel } from '../infrastructrue/persistance/models/type-name.dataModel';
@@ -7,6 +7,10 @@ import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '.
 import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
 import { TaskTypeDTO } from './DTOs/task-type.dto';
 import { Res } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFilterService } from '../infrastructrue/file-upload/file-filter.service';
+import { diskStorage } from 'multer';
+import { FileNamingService } from '../infrastructrue/file-upload/file-naming.service';
 
 @Controller('task-types')
 @Injectable()
@@ -18,7 +22,7 @@ export class TaskTypeController {
     ) { }
 
     @Get()
-    findOne(): string {
+    async findOne(): Promise<string> {
         return 'BELLO';
     }
 
@@ -27,5 +31,18 @@ export class TaskTypeController {
         const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
         this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
         res.status(HttpStatus.CREATED).send({ message: 'Type Created Successfully.' });
+    }
+
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file',
+        {
+            storage: diskStorage({
+                filename: new FileNamingService().fileNaming,
+                destination: './uploads'
+            }),
+            fileFilter: (new FileFilterService(['image/png'])).fileFilter
+        }))
+    async uploadFile(@UploadedFile() file: Express.Multer.File) {
+        console.log(file.filename.split('|'));
     }
 }

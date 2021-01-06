@@ -40,3 +40,6 @@ lerna-debug.log*
 
 # OrmConfig.json
 ormconfig.json
+
+#uploaded images
+uploads

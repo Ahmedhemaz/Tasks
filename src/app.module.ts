@@ -7,12 +7,16 @@ import { Connection } from 'typeorm';
 import { SharedKernalModule } from './shared-kernal/shared-kernal.module';
 import { ScheduleSubdomainModule } from './schedule-subdomain/schedule-subdomain.module';
 import { TaskTypeSubdomainModule } from './task-type-subdomain/task-type-subdomain.module';
+import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     ScheduleSubdomainModule,
     TaskTypeSubdomainModule,
     TypeOrmModule.forRoot(),
     SharedKernalModule,
+    MulterModule.register({
+      dest: '/uploads'
+    })
   ],
   controllers: [AppController],
   providers: [AppService],
