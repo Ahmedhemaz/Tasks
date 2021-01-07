@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm';
+import { ImageDataModel } from './image.dataModel';
 
 @Entity({ name: 'tasks_type' })
 export class TasksTypeDataModel {
@@ -22,5 +23,9 @@ export class TasksTypeDataModel {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
+
+    @OneToOne(() => ImageDataModel)
+    @JoinColumn({ name: 'image_id', referencedColumnName: 'id' })
+    image: ImageDataModel;
 
 }
