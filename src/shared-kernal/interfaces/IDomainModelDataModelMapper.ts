@@ -1,6 +1,5 @@
-export interface IDomainModelDataModelMapper<DomainModel, DataModel> {
-
-    mapDomainModelToDataModel(domainModel: DomainModel): DataModel;
-    mapDataModelToDomainModel(dataModel: DataModel): DomainModel;
-
+export const IDomainEntityDataModelMapper_DI_TOKEN = Symbol('IDomainEntityDataModelMapper<DomainEntity, DataModel>');
+export interface IDomainEntityDataModelMapper<DomainEntity, DataModel> {
+    mapDomainEntityToDataModel(domainModel: DomainEntity): DataModel;
+    mapDataModelToDomainEntity(dataModel: DataModel): DomainEntity;
 }
