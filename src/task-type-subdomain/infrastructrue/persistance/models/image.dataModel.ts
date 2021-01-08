@@ -36,7 +36,9 @@ export class ImageDataModel {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-    @OneToOne(() => TasksTypeDataModel)
+
+    @OneToOne(type => TasksTypeDataModel)
     @JoinColumn({ name: 'task_type_id', referencedColumnName: 'id' })
-    taskId: TasksTypeDataModel;
+    tasksType: TasksTypeDataModel;
+
 }

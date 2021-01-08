@@ -9,11 +9,12 @@ export class ImageDomainEntity {
     private imageOriginalName: ImageOriginalName;
     private imageMimeType: ImageMimeType;
 
-    constructor(imageUrl: string, imageOriginalName: string, imageMimeType: string, id: string) {
+    constructor(imageUrl: string, imageOriginalName: string, imageMimeType: string, id?: string) {
         this.id = new UniqueIdentity(id);
         this.imageOriginalName = new ImageOriginalName(imageOriginalName);
         this.imageUrl = new ImageURL(imageUrl);
         this.imageMimeType = new ImageMimeType(imageMimeType);
+        this.id = new UniqueIdentity(id);
     }
 
     public changeImageOriginalName(newImageOriginalName: string): void {

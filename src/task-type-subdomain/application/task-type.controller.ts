@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
@@ -11,6 +11,10 @@ import { FileNamingService } from '../infrastructrue/file-upload/file-naming.ser
 import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
 import { TaskTypeDTO } from './DTOs/task-type.dto';
+import { ImageDomainEntity } from '../domain/entities/image.domainEntity';
+import { IDomainEntityDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IDomainModelDataModelMapper';
+import { TypeImageMapper } from '../infrastructrue/mapper/image.mapper';
+import { ImageDataModel } from '../infrastructrue/persistance/models/image.dataModel';
 
 @Controller('task-types')
 @Injectable()
@@ -18,7 +22,8 @@ export class TaskTypeController {
 
     constructor(
         @Inject(ITasksTypeReposiroty_DI_TOKEN) private readonly tasksTypeRepository: ITasksTypeRepository,
-        @Inject(IAggregateDataModelMapper_DI_TOKEN) private readonly tasksTypeMapper: IAggregateDataModelMapper<TaskTypeAggregate, TasksTypeDataModel>
+        @Inject(IAggregateDataModelMapper_DI_TOKEN) private readonly tasksTypeMapper: IAggregateDataModelMapper<TaskTypeAggregate, TasksTypeDataModel>,
+        @Inject(IDomainEntityDataModelMapper_DI_TOKEN) private readonly typeImageMapper: TypeImageMapper
     ) { }
 
     @Get()
@@ -33,6 +38,7 @@ export class TaskTypeController {
         res.status(HttpStatus.CREATED).send({ message: 'Type Created Successfully.' });
     }
 
+
     @Post('upload')
     @UseInterceptors(FileInterceptor('file',
         {
@@ -40,9 +46,26 @@ export class TaskTypeController {
                 filename: new FileNamingService().fileNaming,
                 destination: './uploads'
             }),
-            fileFilter: (new FileFilterService(['image/png'])).fileFilter
+            fileFilter: (new FileFilterService(['image/png', 'image/jpg', 'image/jpeg'])).fileFilter
         }))
-    async uploadFile(@UploadedFile() file: Express.Multer.File) {
-        console.log(file.filename.split('|'));
+    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO) {
+        if (file) {
+            const imageDomainEntity: ImageDomainEntity = new ImageDomainEntity(
+                file.path,
+                file.originalname,
+                file.mimetype,
+            );
+            const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(
+                taskTypeDto.name, null, imageDomainEntity
+            );
+            const taskTypeDataModel: TasksTypeDataModel = this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate);
+            const imageDataModel: ImageDataModel = this.typeImageMapper.mapDomainEntityToDataModel(taskTypeAggregate.typeImage());
+            imageDataModel.tasksType = taskTypeDataModel;
+            this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
+
+        } else {
+            const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
+            this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
+        }
     }
 }
