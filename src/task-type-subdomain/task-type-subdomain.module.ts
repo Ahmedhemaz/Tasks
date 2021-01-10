@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TaskTypeController } from './application/task-type.controller';
 import { TasksTypeMapper } from './infrastructrue/mapper/task-type.mapper';
 import { TasksTypeRepository } from './infrastructrue/persistance/repositories/tasks-type.repository';
@@ -6,7 +6,7 @@ import { ITasksTypeReposiroty_DI_TOKEN } from './infrastructrue/persistance/inte
 import { IAggregateDataModelMapper_DI_TOKEN } from '../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { TypeImageMapper } from './infrastructrue/mapper/image.mapper';
 import { IDomainEntityDataModelMapper_DI_TOKEN } from '../shared-kernal/interfaces/IDomainModelDataModelMapper';
-
+import { CreateTaskTypeMiddleware } from './application/middlewares/CreateTaskType.middleware';
 @Module({
     controllers: [TaskTypeController],
     providers: [
@@ -15,4 +15,12 @@ import { IDomainEntityDataModelMapper_DI_TOKEN } from '../shared-kernal/interfac
         { useClass: TypeImageMapper, provide: IDomainEntityDataModelMapper_DI_TOKEN },
     ],
 })
-export class TaskTypeSubdomainModule { }
+export class TaskTypeSubdomainModule implements NestModule {
+
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(CreateTaskTypeMiddleware).forRoutes(
+            { path: 'task-types/upload', method: RequestMethod.POST }
+        )
+    }
+
+}
