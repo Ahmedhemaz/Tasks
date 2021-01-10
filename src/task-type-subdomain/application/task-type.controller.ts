@@ -1,20 +1,22 @@
-import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
 
+import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
+import { IDomainEntityDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IDomainModelDataModelMapper';
 import { TasksTypeDataModel } from '../infrastructrue/persistance/models/type-name.dataModel';
 import { ITasksTypeRepository, ITasksTypeReposiroty_DI_TOKEN } from '../infrastructrue/persistance/interfaces/ITasksTypeRepository';
 import { FileFilterService } from '../infrastructrue/file-upload/file-filter.service';
 import { FileNamingService } from '../infrastructrue/file-upload/file-naming.service';
-import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
-import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
-import { TaskTypeDTO } from './DTOs/task-type.dto';
-import { ImageDomainEntity } from '../domain/entities/image.domainEntity';
-import { IDomainEntityDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IDomainModelDataModelMapper';
 import { TypeImageMapper } from '../infrastructrue/mapper/image.mapper';
 import { ImageDataModel } from '../infrastructrue/persistance/models/image.dataModel';
+import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
+import { ImageDomainEntity } from '../domain/entities/image.domainEntity';
+import { INVALID_IMAGE_FORMAT_ERROR } from '../domain/error-messages/errors';
+import { VALID_IMAGE_FORMATS } from '../domain/constants';
+import { TaskTypeDTO } from './DTOs/task-type.dto';
 
 @Controller('task-types')
 @Injectable()
@@ -46,7 +48,7 @@ export class TaskTypeController {
                 filename: new FileNamingService().fileNaming,
                 destination: './uploads'
             }),
-            fileFilter: (new FileFilterService(['image/png', 'image/jpg', 'image/jpeg'])).fileFilter
+            fileFilter: (new FileFilterService(VALID_IMAGE_FORMATS, INVALID_IMAGE_FORMAT_ERROR).fileFilter)
         }))
     async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO) {
         if (file) {
