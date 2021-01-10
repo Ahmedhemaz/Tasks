@@ -3,7 +3,7 @@ if [ $NODE_ENV == "development" ]
 then
     echo "development mode running";
     npx typeorm migration:run
-    npm run start
+    npm run start:dev
 else
     npm run start
 fi

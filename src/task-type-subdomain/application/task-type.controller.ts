@@ -55,14 +55,10 @@ export class TaskTypeController {
                 file.originalname,
                 file.mimetype,
             );
-            const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(
-                taskTypeDto.name, null, imageDomainEntity
-            );
+            const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name, imageDomainEntity);
             const taskTypeDataModel: TasksTypeDataModel = this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate);
             const imageDataModel: ImageDataModel = this.typeImageMapper.mapDomainEntityToDataModel(taskTypeAggregate.typeImage());
-            imageDataModel.tasksType = taskTypeDataModel;
             this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
-
         } else {
             const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
             this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));

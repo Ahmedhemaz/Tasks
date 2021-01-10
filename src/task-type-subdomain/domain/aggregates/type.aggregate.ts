@@ -8,7 +8,7 @@ export class TaskTypeAggregate {
     private name: Name;
     private image: ImageDomainEntity;
 
-    constructor(name: string, uId?: string, image?: ImageDomainEntity) {
+    constructor(name: string, image?: ImageDomainEntity, uId?: string,) {
 
         this.uId = new UniqueIdentity(uId);
         this.name = new Name(name);

@@ -26,6 +26,7 @@ export class TasksTypeRepository implements ITasksTypeRepository {
     }
 
     async createWithImage(taskType: TasksTypeDataModel, imageDataModel: ImageDataModel): Promise<void> {
+        imageDataModel.tasksType = taskType;
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.connect();
