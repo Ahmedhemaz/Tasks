@@ -1,7 +1,7 @@
-import { EMPTY_IMAGE_MIME_TYPE_ERROR, INVALID_IMAGE_FORMAT_ERROR } from "../../domain/error-messages/errors";
-import { EmptyStringException } from "../../domain/exceptions/emptyString.exception";
-import { InvalidImageFormatException } from "../../domain/exceptions/invalid-image-format.exception";
-import { ImageMimeType } from "../../domain/value-objects/image-mimetype";
+import { EMPTY_IMAGE_MIME_TYPE_ERROR, INVALID_IMAGE_FORMAT_ERROR } from "../../../domain/error-messages/errors";
+import { EmptyStringException } from "../../../domain/exceptions/emptyString.exception";
+import { InvalidImageFormatException } from "../../../domain/exceptions/invalid-image-format.exception";
+import { ImageMimeType } from "../../../domain/value-objects/image-mimetype";
 
 describe('Image Mime type', () => {
     const imageMimeType1 = new ImageMimeType('image/png');

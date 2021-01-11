@@ -1,8 +1,8 @@
-import { INVALID_UUID_V4 } from "../../../shared-kernal/errors/error-messages";
-import { InvalidUniqueIdentityException } from "../../../shared-kernal/exceptions/invalidUniqueIdentity.exception";
-import { TaskTypeAggregate } from "../../domain/aggregates/type.aggregate";
-import { EMPTY_NAME_ERROR } from "../../domain/error-messages/errors";
-import { EmptyStringException } from "../../domain/exceptions/emptyString.exception";
+import { INVALID_UUID_V4 } from "../../../../shared-kernal/errors/error-messages";
+import { InvalidUniqueIdentityException } from "../../../../shared-kernal/exceptions/invalidUniqueIdentity.exception";
+import { TaskTypeAggregate } from "../../../domain/aggregates/type.aggregate";
+import { EMPTY_NAME_ERROR } from "../../../domain/error-messages/errors";
+import { EmptyStringException } from "../../../domain/exceptions/emptyString.exception";
 
 jest.mock('uuid', () => ({ v4: () => '2cd97a1a-4d7c-4cfe-a9ce-cfa9c8e73b76' }));
 

@@ -1,6 +1,6 @@
-import { Name } from '../../domain/value-objects/name';
-import { EMPTY_NAME_ERROR } from '../../domain/error-messages/errors';
-import { EmptyStringException } from '../../domain/exceptions/emptyString.exception';
+import { Name } from '../../../domain/value-objects/name';
+import { EMPTY_NAME_ERROR } from '../../../domain/error-messages/errors';
+import { EmptyStringException } from '../../../domain/exceptions/emptyString.exception';
 
 
 describe('Task Type Name', () => {

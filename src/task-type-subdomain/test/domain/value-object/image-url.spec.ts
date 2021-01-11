@@ -1,6 +1,6 @@
-import { EMPTY_IMAGE_URL_ERROR } from "../../domain/error-messages/errors";
-import { EmptyStringException } from "../../domain/exceptions/emptyString.exception";
-import { ImageURL } from "../../domain/value-objects/image-url"
+import { EMPTY_IMAGE_URL_ERROR } from "../../../domain/error-messages/errors";
+import { EmptyStringException } from "../../../domain/exceptions/emptyString.exception";
+import { ImageURL } from "../../../domain/value-objects/image-url"
 
 describe('Image URL', () => {
     const imageURL1 = new ImageURL('url1');

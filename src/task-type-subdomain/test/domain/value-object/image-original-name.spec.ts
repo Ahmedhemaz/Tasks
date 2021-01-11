@@ -1,6 +1,6 @@
-import { EMPTY_IMAGE_ORIGINAL_NAME_ERROR } from "../../domain/error-messages/errors";
-import { EmptyStringException } from "../../domain/exceptions/emptyString.exception";
-import { ImageOriginalName } from "../../domain/value-objects/image-original-name"
+import { EMPTY_IMAGE_ORIGINAL_NAME_ERROR } from "../../../domain/error-messages/errors";
+import { EmptyStringException } from "../../../domain/exceptions/emptyString.exception";
+import { ImageOriginalName } from "../../../domain/value-objects/image-original-name"
 
 describe('Image Original Name', () => {
     const imageOriginalName1 = new ImageOriginalName('org1');

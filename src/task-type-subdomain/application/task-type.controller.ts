@@ -55,7 +55,7 @@ export class TaskTypeController {
                 await this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
                 res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
             } else {
-                const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
+                const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
                 await this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
                 res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
             }
