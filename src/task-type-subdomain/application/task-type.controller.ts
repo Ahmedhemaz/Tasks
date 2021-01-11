@@ -6,6 +6,7 @@ import { diskStorage } from 'multer';
 
 import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { IDomainEntityDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IDomainModelDataModelMapper';
+import { HttpErrors } from '../../shared-kernal/errors/http-errors-names';
 import { TasksTypeDataModel } from '../infrastructrue/persistance/models/type-name.dataModel';
 import { ITasksTypeRepository, ITasksTypeReposiroty_DI_TOKEN } from '../infrastructrue/persistance/interfaces/ITasksTypeRepository';
 import { FileFilterService } from '../infrastructrue/file-upload/file-filter.service';
@@ -15,8 +16,9 @@ import { ImageDataModel } from '../infrastructrue/persistance/models/image.dataM
 import { TaskTypeAggregate } from '../domain/aggregates/type.aggregate';
 import { ImageDomainEntity } from '../domain/entities/image.domainEntity';
 import { INVALID_IMAGE_FORMAT_ERROR } from '../domain/error-messages/errors';
-import { VALID_IMAGE_FORMATS } from '../domain/constants';
+import { DOMAIN_EXCEPTIONS_TYPE, VALID_IMAGE_FORMATS } from '../domain/constants';
 import { TaskTypeDTO } from './DTOs/task-type.dto';
+import { ResponseMessages } from './response-messages/response-messages';
 
 @Controller('task-types')
 @Injectable()
@@ -34,36 +36,35 @@ export class TaskTypeController {
     }
 
     @Post()
-    async create(@Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
-        const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
-        this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
-        res.status(HttpStatus.CREATED).send({ message: 'Type Created Successfully.' });
-    }
-
-
-    @Post('upload')
     @UseInterceptors(FileInterceptor('file',
         {
             storage: diskStorage({
                 filename: new FileNamingService().fileNaming,
                 destination: './uploads'
             }),
-            fileFilter: (new FileFilterService(VALID_IMAGE_FORMATS, INVALID_IMAGE_FORMAT_ERROR).fileFilter)
+            fileFilter: (new FileFilterService(VALID_IMAGE_FORMATS, INVALID_IMAGE_FORMAT_ERROR).fileFilter),
+            limits: { fileSize: 1024 * 1024 * 3 },
         }))
-    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO) {
-        if (file) {
-            const imageDomainEntity: ImageDomainEntity = new ImageDomainEntity(
-                file.path,
-                file.originalname,
-                file.mimetype,
-            );
-            const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name, imageDomainEntity);
-            const taskTypeDataModel: TasksTypeDataModel = this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate);
-            const imageDataModel: ImageDataModel = this.typeImageMapper.mapDomainEntityToDataModel(taskTypeAggregate.typeImage());
-            this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
-        } else {
-            const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
-            this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
+    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
+        try {
+            if (file) {
+                const imageDomainEntity: ImageDomainEntity = new ImageDomainEntity(file.filename, file.originalname, file.mimetype);
+                const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name, imageDomainEntity);
+                const taskTypeDataModel: TasksTypeDataModel = this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate);
+                const imageDataModel: ImageDataModel = this.typeImageMapper.mapDomainEntityToDataModel(taskTypeAggregate.typeImage());
+                await this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
+                res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
+            } else {
+                const taskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
+                await this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
+                res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
+            }
+        } catch (error) {
+            if (error.type === DOMAIN_EXCEPTIONS_TYPE) {
+                res.status(HttpStatus.BAD_REQUEST).send({ message: error.message });
+            } else {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: HttpErrors.INTERNAL_SERVER_ERROR });
+            }
         }
     }
 }

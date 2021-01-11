@@ -14,6 +14,5 @@ export class TaskTypeDTO {
     @MaxLength(50, {
         message: 'name is too long! Must be less than 50 characters.'
     })
-    @IsAlpha()
     name: string
 }

@@ -32,13 +32,12 @@ export class TasksTypeRepository implements ITasksTypeRepository {
         await queryRunner.connect();
 
         await queryRunner.startTransaction();
-
         try {
             await queryRunner.manager.save(taskType);
             await queryRunner.manager.save(imageDataModel);
             await queryRunner.commitTransaction();
         } catch (error) {
-            queryRunner.rollbackTransaction();
+            await queryRunner.rollbackTransaction();
         } finally {
             await queryRunner.release();
         }

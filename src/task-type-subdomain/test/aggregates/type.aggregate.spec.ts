@@ -13,7 +13,7 @@ describe('TaskTypeAggregate Test', () => {
 
     it('should create TaskTypeAggregate with mockedName & mockedId', () => {
 
-        const taskType: TaskTypeAggregate = new TaskTypeAggregate(mockedName, mockedId1);
+        const taskType: TaskTypeAggregate = new TaskTypeAggregate(mockedName, null, mockedId1);
         expect(taskType.typeName()).toBe(mockedName);
         expect(taskType.typeUID()).toBe(mockedId1);
     });
@@ -25,12 +25,12 @@ describe('TaskTypeAggregate Test', () => {
     });
 
     it('should throw invalid unique identity error', () => {
-        expect(() => new TaskTypeAggregate(mockedName, '12345'))
+        expect(() => new TaskTypeAggregate(mockedName, null, '12345'))
             .toThrowError(new InvalidUniqueIdentityException(INVALID_UUID_V4));
     });
 
     it('should throw empty string error', () => {
-        expect(() => new TaskTypeAggregate('', mockedId1))
+        expect(() => new TaskTypeAggregate('', null, mockedId1))
             .toThrowError(new EmptyStringException(EMPTY_NAME_ERROR));
     });
 
