@@ -15,7 +15,7 @@ describe('TaskTypeAggregate Test', () => {
         'url', 'originalName', 'image/png'
     )
 
-    it('should create TaskTypeAggregate with mockedName & mockedId', () => {
+    it('should create TaskTypeAggregate with mockedName & mockedId & mocked ImageDomainEntity', () => {
 
         const taskType: TaskTypeAggregate = new TaskTypeAggregate(mockedName, imageDomainEntityMock, mockedId1);
         expect(taskType.typeName()).toBe(mockedName);
