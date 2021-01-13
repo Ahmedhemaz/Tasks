@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
 import { Connection } from 'typeorm';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { SharedKernalModule } from './shared-kernal/shared-kernal.module';
 import { ScheduleSubdomainModule } from './schedule-subdomain/schedule-subdomain.module';
 import { TaskTypeSubdomainModule } from './task-type-subdomain/task-type-subdomain.module';
-import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     ScheduleSubdomainModule,
@@ -16,7 +17,12 @@ import { MulterModule } from '@nestjs/platform-express';
     SharedKernalModule,
     MulterModule.register({
       dest: '/uploads'
-    })
+    }),
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+      isGlobal: true,
+      cache: true
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

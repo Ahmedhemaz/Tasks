@@ -3,6 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
+import { ConfigService } from '@nestjs/config';
 
 import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { IDomainEntityDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IDomainModelDataModelMapper';
@@ -27,7 +28,8 @@ export class TaskTypeController {
     constructor(
         @Inject(ITasksTypeReposiroty_DI_TOKEN) private readonly tasksTypeRepository: ITasksTypeRepository,
         @Inject(IAggregateDataModelMapper_DI_TOKEN) private readonly tasksTypeMapper: IAggregateDataModelMapper<TaskTypeAggregate, TasksTypeDataModel>,
-        @Inject(IDomainEntityDataModelMapper_DI_TOKEN) private readonly typeImageMapper: TypeImageMapper
+        @Inject(IDomainEntityDataModelMapper_DI_TOKEN) private readonly typeImageMapper: TypeImageMapper,
+        private readonly configService: ConfigService
     ) { }
 
     @Get()
@@ -39,8 +41,7 @@ export class TaskTypeController {
     @UseInterceptors(FileInterceptor('file',
         {
             storage: diskStorage({
-                filename: new FileNamingService().fileNaming,
-                destination: './uploads'
+                filename: new FileNamingService().fileNaming
             }),
             fileFilter: (new FileFilterService(VALID_IMAGE_FORMATS, INVALID_IMAGE_FORMAT_ERROR).fileFilter),
             limits: { fileSize: 1024 * 1024 * 3 },
