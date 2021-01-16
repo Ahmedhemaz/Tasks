@@ -26,6 +26,7 @@
     "@nestjs/core": "^7.6.5",
     "@nestjs/platform-express": "^7.6.5",
     "@nestjs/typeorm": "^7.1.5",
+    "aws-sdk": "^2.826.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "mysql": "^2.18.1",
@@ -36,6 +37,7 @@
     "validator": "^13.5.2"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.1.0",
     "@nestjs/cli": "^7.5.1",
     "@nestjs/schematics": "^7.2.6",
     "@nestjs/testing": "^7.6.5",

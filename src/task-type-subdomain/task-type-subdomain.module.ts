@@ -7,12 +7,14 @@ import { IAggregateDataModelMapper_DI_TOKEN } from '../shared-kernal/interfaces/
 import { TypeImageMapper } from './infrastructrue/mapper/image.mapper';
 import { IDomainEntityDataModelMapper_DI_TOKEN } from '../shared-kernal/interfaces/IDomainModelDataModelMapper';
 import { CreateTaskTypeMiddleware } from './application/middlewares/CreateTaskType.middleware';
+import { S3Service } from './infrastructrue/file-upload/aws-upload.service';
 @Module({
     controllers: [TaskTypeController],
     providers: [
         { useClass: TasksTypeRepository, provide: ITasksTypeReposiroty_DI_TOKEN, },
         { useClass: TasksTypeMapper, provide: IAggregateDataModelMapper_DI_TOKEN },
         { useClass: TypeImageMapper, provide: IDomainEntityDataModelMapper_DI_TOKEN },
+        S3Service
     ],
 })
 export class TaskTypeSubdomainModule implements NestModule {

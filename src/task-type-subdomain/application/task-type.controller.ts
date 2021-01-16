@@ -3,7 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
-import { ConfigService } from '@nestjs/config';
+
 
 import { IAggregateDataModelMapper, IAggregateDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IAggregateDataModelMapper';
 import { IDomainEntityDataModelMapper_DI_TOKEN } from '../../shared-kernal/interfaces/IDomainModelDataModelMapper';
@@ -20,6 +20,7 @@ import { INVALID_IMAGE_FORMAT_ERROR } from '../domain/error-messages/errors';
 import { DOMAIN_EXCEPTIONS_TYPE, VALID_IMAGE_FORMATS } from '../domain/constants';
 import { TaskTypeDTO } from './DTOs/task-type.dto';
 import { ResponseMessages } from './response-messages/response-messages';
+import { S3Service } from '../infrastructrue/file-upload/aws-upload.service';
 
 @Controller('task-types')
 @Injectable()
@@ -29,7 +30,7 @@ export class TaskTypeController {
         @Inject(ITasksTypeReposiroty_DI_TOKEN) private readonly tasksTypeRepository: ITasksTypeRepository,
         @Inject(IAggregateDataModelMapper_DI_TOKEN) private readonly tasksTypeMapper: IAggregateDataModelMapper<TaskTypeAggregate, TasksTypeDataModel>,
         @Inject(IDomainEntityDataModelMapper_DI_TOKEN) private readonly typeImageMapper: TypeImageMapper,
-        private readonly configService: ConfigService
+        private s3Service: S3Service
     ) { }
 
     @Get()
@@ -53,8 +54,17 @@ export class TaskTypeController {
                 const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name, imageDomainEntity);
                 const taskTypeDataModel: TasksTypeDataModel = this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate);
                 const imageDataModel: ImageDataModel = this.typeImageMapper.mapDomainEntityToDataModel(taskTypeAggregate.typeImage());
-                await this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
-                res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
+                //TODO change blocking upload with workers and queues
+                //TODO change imageDomainEntity and imageDataModel to save tmp, isUploadedToS3, keyName
+                //TODO change unit Tests to match with new changes
+                this.s3Service.uploadImage(imageDomainEntity.getImageUrl(), imageDomainEntity.getImageMimeType())
+                    .then(() => {
+                        this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
+                        res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
+                    }).catch((err) => {
+                        console.log(err);
+                        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: HttpErrors.INTERNAL_SERVER_ERROR });
+                    });
             } else {
                 const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
                 await this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
