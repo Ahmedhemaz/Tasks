@@ -8,15 +8,17 @@ export class TypeImageMapper implements IDomainEntityDataModelMapper<ImageDomain
 
     mapDomainEntityToDataModel(imageDomainEntity: ImageDomainEntity): ImageDataModel {
         const imageDataModel: ImageDataModel = new ImageDataModel();
+        imageDataModel.tempPath = imageDomainEntity.getImageTempPath();
         imageDataModel.id = imageDomainEntity.getImageId();
         imageDataModel.originalName = imageDomainEntity.getImageOriginalName();
-        imageDataModel.url = imageDomainEntity.getImageUrl();
+        imageDataModel.keyName = imageDomainEntity.getImageKeyName();
         imageDataModel.mimeType = imageDomainEntity.getImageMimeType();
         return imageDataModel;
     }
     mapDataModelToDomainEntity(imageDataModel: ImageDataModel): ImageDomainEntity {
         return new ImageDomainEntity(
-            imageDataModel.url,
+            imageDataModel.tempPath,
+            imageDataModel.keyName,
             imageDataModel.originalName,
             imageDataModel.mimeType,
             imageDataModel.id

@@ -50,14 +50,14 @@ export class TaskTypeController {
     async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
         try {
             if (file) {
-                const imageDomainEntity: ImageDomainEntity = new ImageDomainEntity(file.filename, file.originalname, file.mimetype);
+                const imageDomainEntity: ImageDomainEntity = new ImageDomainEntity(file.destination, file.filename, file.originalname, file.mimetype);
                 const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name, imageDomainEntity);
                 const taskTypeDataModel: TasksTypeDataModel = this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate);
                 const imageDataModel: ImageDataModel = this.typeImageMapper.mapDomainEntityToDataModel(taskTypeAggregate.typeImage());
                 //TODO change blocking upload with workers and queues
-                //TODO change imageDomainEntity and imageDataModel to save tmp, isUploadedToS3, keyName
+                //TODO change imageDomainEntity and imageDataModel to save isUploadedToS3
                 //TODO change unit Tests to match with new changes
-                this.s3Service.uploadImage(imageDomainEntity.getImageUrl(), imageDomainEntity.getImageMimeType())
+                this.s3Service.uploadImage(imageDomainEntity.getImageTempPath(), imageDomainEntity.getImageKeyName(), imageDomainEntity.getImageMimeType())
                     .then(() => {
                         this.tasksTypeRepository.createWithImage(taskTypeDataModel, imageDataModel);
                         res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });

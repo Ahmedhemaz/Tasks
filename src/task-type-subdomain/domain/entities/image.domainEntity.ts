@@ -1,19 +1,21 @@
 import { UniqueIdentity } from "../../../shared-kernal/value-object/uniqueIdentity";
 import { ImageMimeType } from "../value-objects/image-mimetype";
 import { ImageOriginalName } from "../value-objects/image-original-name";
-import { ImageURL } from "../value-objects/image-url";
+import { ImageTempPath } from "../value-objects/image-temp-path";
+import { ImageKeyName } from "../value-objects/image-key-name";
 
 export class ImageDomainEntity {
     private readonly id: UniqueIdentity;
-    private imageUrl: ImageURL;
+    private imageKeyName: ImageKeyName;
     private imageOriginalName: ImageOriginalName;
     private imageMimeType: ImageMimeType;
+    private imageTempPath: ImageTempPath;
 
-    constructor(imageUrl: string, imageOriginalName: string, imageMimeType: string, id?: string) {
-        this.id = new UniqueIdentity(id);
-        this.imageOriginalName = new ImageOriginalName(imageOriginalName);
-        this.imageUrl = new ImageURL(imageUrl);
+    constructor(imageTempPath: string, imageKeyName: string, imageOriginalName: string, imageMimeType: string, id?: string) {
+        this.imageTempPath = new ImageTempPath(`${imageTempPath}/${imageKeyName}`);
+        this.imageKeyName = new ImageKeyName(imageKeyName);
         this.imageMimeType = new ImageMimeType(imageMimeType);
+        this.imageOriginalName = new ImageOriginalName(imageOriginalName);
         this.id = new UniqueIdentity(id);
     }
 
@@ -22,11 +24,19 @@ export class ImageDomainEntity {
     }
 
     public changeImageUrl(newImageUrl: string): void {
-        this.imageUrl = new ImageURL(newImageUrl);
+        this.imageKeyName = new ImageKeyName(newImageUrl);
     }
 
-    public getImageUrl(): Readonly<string> {
-        return this.imageUrl.getImageURL();
+    public changeImageTempPath(newImageTempPath: string): void {
+        this.imageTempPath = new ImageTempPath(newImageTempPath);
+    }
+
+    public getImageTempPath(): Readonly<string> {
+        return this.imageTempPath.getImageTempPath();
+    }
+
+    public getImageKeyName(): Readonly<string> {
+        return this.imageKeyName.getImageKeyName();
     }
 
     public getImageOriginalName(): Readonly<string> {

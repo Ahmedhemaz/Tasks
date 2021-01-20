@@ -11,9 +11,7 @@ describe('TaskTypeAggregate Test', () => {
     const mockedName = 'health';
     const mockedId1 = '76b98d2c-649c-413d-a211-7aa18ff71ce2';
     const autoGenratedUUIDMock = '2cd97a1a-4d7c-4cfe-a9ce-cfa9c8e73b76';
-    const imageDomainEntityMock = new ImageDomainEntity(
-        'url', 'originalName', 'image/png'
-    )
+    const imageDomainEntityMock = new ImageDomainEntity('/tmp', 'imageKeyName', 'originalName', 'image/png');
 
     it('should create TaskTypeAggregate with mockedName & mockedId & mocked ImageDomainEntity', () => {
 

@@ -14,15 +14,21 @@ export class ImageDataModel {
 
     @Column({
         nullable: false,
+        name: 'temp_path'
+    })
+    tempPath: string;
+
+    @Column({
+        nullable: false,
         name: 'original_name'
     })
     originalName: string;
 
     @Column({
         nullable: false,
-        name: 'url'
+        name: 'key_name'
     })
-    url: string;
+    keyName: string;
 
     @Column({
         nullable: false,

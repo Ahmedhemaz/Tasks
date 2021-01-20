@@ -33,11 +33,10 @@ export class S3Service {
         })
     }
 
-    uploadImage = async (fileName: string, mimeType: string) => {
-        const fileStream = fs.createReadStream(`/tmp/${fileName}`);
+    uploadImage = async (fileTempPath: string, fileName: string, mimeType: string) => {
+        const fileStream = fs.createReadStream(fileTempPath);
         fileStream.on('error', (err: any) => {
             throw new Error(err);
-            // console.log('File error', err);
         });
 
         const uploadParams = {
