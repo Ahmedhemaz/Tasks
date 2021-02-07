@@ -1,4 +1,7 @@
-import { Body, Controller, Get, HttpStatus, Inject, Injectable, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+    Body, Controller, Get, HttpStatus, Inject, Injectable,
+    Post, Query, UploadedFile, UseInterceptors
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
@@ -21,6 +24,7 @@ import { DOMAIN_EXCEPTIONS_TYPE, VALID_IMAGE_FORMATS } from '../domain/constants
 import { TaskTypeDTO } from './DTOs/task-type.dto';
 import { ResponseMessages } from './response-messages/response-messages';
 import { S3Service } from '../infrastructrue/file-upload/aws-upload.service';
+import { TaskTypeQueryDTO } from './DTOs/task-type-query.dto';
 
 @Controller('task-types')
 @Injectable()
@@ -33,11 +37,6 @@ export class TaskTypeController {
         private s3Service: S3Service
     ) { }
 
-    @Get()
-    async findOne(): Promise<string> {
-        return 'BELLO';
-    }
-
     @Post()
     @UseInterceptors(FileInterceptor('file',
         {
@@ -47,7 +46,7 @@ export class TaskTypeController {
             fileFilter: (new FileFilterService(VALID_IMAGE_FORMATS, INVALID_IMAGE_FORMAT_ERROR).fileFilter),
             limits: { fileSize: 1024 * 1024 * 3 },
         }))
-    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
+    async createTaskType(@UploadedFile() file: Express.Multer.File, @Body() taskTypeDto: TaskTypeDTO, @Res() res: Response) {
         try {
             if (file) {
                 const imageDomainEntity: ImageDomainEntity = new ImageDomainEntity(file.destination, file.filename, file.originalname, file.mimetype);
@@ -67,7 +66,7 @@ export class TaskTypeController {
                     });
             } else {
                 const taskTypeAggregate: TaskTypeAggregate = new TaskTypeAggregate(taskTypeDto.name);
-                await this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
+                this.tasksTypeRepository.create(this.tasksTypeMapper.mapAggregateToDataModel(taskTypeAggregate));
                 res.status(HttpStatus.CREATED).send({ message: ResponseMessages.TYPE_CREATED_SUCCESSFULLY });
             }
         } catch (error) {
@@ -77,5 +76,23 @@ export class TaskTypeController {
                 res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: HttpErrors.INTERNAL_SERVER_ERROR });
             }
         }
+    }
+
+    @Get()
+    async getTaskType(@Query() query: TaskTypeQueryDTO, @Res() res: Response) {
+        try {
+            let types: TasksTypeDataModel[] = await this.tasksTypeRepository.getTypesByName(query.name);
+            if (!types || !types.length) return res.status(HttpStatus.OK).send([]);
+            let types1 = types.map((type) => {
+                return {
+                    name: type.name,
+                    imageURL: this.s3Service.getImagePreSignedURL(type.image.keyName)
+                }
+            })
+            res.status(HttpStatus.OK).send(types1);
+        } catch (error) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: HttpErrors.INTERNAL_SERVER_ERROR });
+        }
+
     }
 }

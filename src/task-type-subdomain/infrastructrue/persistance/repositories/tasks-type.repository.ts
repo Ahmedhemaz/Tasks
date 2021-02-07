@@ -1,4 +1,4 @@
-import { getConnection } from 'typeorm';
+import { createQueryBuilder, getConnection } from 'typeorm';
 import { Injectable } from "@nestjs/common";
 
 import { ITasksTypeRepository } from "../interfaces/ITasksTypeRepository";
@@ -12,8 +12,20 @@ export class TasksTypeRepository implements ITasksTypeRepository {
         throw new Error("Method not implemented.");
     }
 
-    getTypeByName(typeName: string): TasksTypeDataModel {
-        throw new Error("Method not implemented.");
+    async getTypeByName(name: string): Promise<TasksTypeDataModel> {
+        return await createQueryBuilder(TasksTypeDataModel, "task_type")
+            .leftJoinAndMapOne("task_type.image", ImageDataModel, "task_type_images", "task_type_images.task_type_id = task_type.id")
+            .where("task_type.name like :name", { name: `%${name}%` })
+            .take(1)
+            .getOne();
+    }
+
+    async getTypesByName(name: string): Promise<TasksTypeDataModel[]> {
+        return await createQueryBuilder(TasksTypeDataModel, "task_type")
+            .leftJoinAndMapOne("task_type.image", ImageDataModel, "task_type_images", "task_type_images.task_type_id = task_type.id")
+            .where("task_type.name like :name", { name: `%${name}%` })
+            .take(5)
+            .getMany();
     }
 
     async create(taskType: TasksTypeDataModel): Promise<void> {

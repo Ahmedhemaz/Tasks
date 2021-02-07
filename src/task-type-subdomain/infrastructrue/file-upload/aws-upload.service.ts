@@ -54,7 +54,7 @@ export class S3Service {
         return this.s3.putObject(uploadParams).promise();
     }
 
-    getImagePreSignedURL = async (imageName: string) => {
+    getImagePreSignedURL = (imageName: string) => {
         const params = {
             Bucket: this.configService.get(AWS_S3_BUCKET_NAME),
             Key: `${imageName}`,

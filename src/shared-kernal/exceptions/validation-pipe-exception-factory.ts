@@ -4,7 +4,7 @@ import { HttpErrors } from '../errors/http-errors-names';
 const validationPipeExceptionFactory = (errors: ValidationError[]) => {
     const serializedErrors: any = {};
     errors.forEach(error => {
-        serializedErrors[error.property] = Object.values(error.constraints)[0];
+        serializedErrors[error.property] = Object.values(error.constraints).pop();
     });
     return new BadRequestException({
         messages: { ...serializedErrors },

@@ -6,7 +6,9 @@ export interface ITasksTypeRepository {
 
     getTypeById(typeId: number): TasksTypeDataModel;
 
-    getTypeByName(typeName: string): TasksTypeDataModel;
+    getTypeByName(typeName: string): Promise<TasksTypeDataModel>;
+
+    getTypesByName(typeName: string): Promise<TasksTypeDataModel[]>;
 
     create(taskType: TasksTypeDataModel): void;
 
